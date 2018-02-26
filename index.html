@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>EASM Home</title>
+
+    <!-- Bootstrap -->
+    <link href= "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href = "easm_style.css" rel = "stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <center>
+      <div class = "container">
+        <img src = "../easm_header.png"></img>
+        <h2>
+          east asian studies macroscope
+        </h2>
+        <h1>
+          <font color = #a84636>((</font>tools<font color = #a84636>)</font><font color = #8c8160>)</font><font color = #e0c369>)</font>
+        </h1>
+
+        <div class="row">
+          <div class="col-sm-4">
+            <a href ="qts-topics-pruned/model.html">
+              <h2>topics</h2>
+              <img src="../topics_bubble.png" onmouseover="this.src='../topics_bubble_hover.png'" onmouseout="this.src='../topics_bubble.png'" height = 150 width = 150></img>
+            </a>   
+            <!--<p>This interface depicts relationships between poems in the Quan Tang Shi and the latent semantic topics detected in the collection. Rankings and term clouds of prominent characters in each topic, cluster visualizations of topics based on shared terms, graphs of topic prevalence over time, and statistics about topic prevalence in individual poems help to facilitate both high-level and close analysis of the more than 44,000 poems in the collection.</p>-->
+          </div>
+          <div class="col-sm-4">
+            <a href = "network/index.html">
+              <h2>network</h2>
+              <img src="../network_bubble.png" onmouseover="this.src='../network_bubble_hover.png'" onmouseout="this.src='../network_bubble.png'" height = 150 width = 150></img>
+           </a>
+           <!--<p>A network graph of connections between poems based on shared topics. Each point is a poem, and each link is a shared topic. Colors reflect clusters of poems that have many shared topics.</p>-->
+          </div>
+          <div class="col-sm-4">
+            <a href = "qts-map/app/index.html">
+              <h2>map</h2>
+              <img src="../maps_bubble.png" onmouseover="this.src='../maps_bubble_hover.png'" onmouseout="this.src='../maps_bubble.png'" height = 150 width = 150></img>
+            </a>
+            <!--<p>A visualization of place names mentioned in the Quan Tang Shi. Clicking on a point on the map will show a list of passages that mention the location. Place names and geographic coordinates were extracted from the <a href ="http://songgis.ucmerced.edu/">Digital Gazetteer of the Song Dynasty</a></p>-->
+          </div>
+        </div>
+      </div>
+    </center>
+
+    <!-- (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
+</html>

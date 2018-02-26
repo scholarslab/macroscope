@@ -1,0 +1,177 @@
+<html>
+
+<head>
+  <title>Quan Tang shi</title> 
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/bootstrap.min.css" media="screen">
+  <script src="http://d3js.org/d3.v2.min.js?2.10.0"></script>
+  <script type="text/javascript" src="d3.layout.cloud.js"></script>
+  <style>
+main-clouds {
+       margin-top: 51px;
+}
+</style>
+
+<!--  <link rel="stylesheet" href="css/index.css" type="text/css"> -->
+</head>
+
+<body>
+  
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand model_title" href="#">Quan Tang shi</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul id="nav_main" class="nav navbar-nav">
+        <li id="nav_model"><a href="../qts-topics/model.html">&#8592; Back to topic browser</a></li>
+        <li id="nav_clouds"><a href="#/show_clouds" id="show_clouds" onclick="showClouds();">Term clouds</a></li>
+        <li id="nav_about"><a href="#/about" id="about" onclick="showAbout();">About</a></li>
+<!--        <li id="nav_topic" class="dropdown">
+          <a href="#/topic" class="dropdown-toggle" data-toggle="dropdown" data-target="#" id="topic_dropdown_toggle">
+            Topic<b class="caret"></b>
+          </a>
+          <ul id="topic_dropdown" class="dropdown-menu scroll-menu" role="menu" aria-labelledby="topic_dropdown_toggle">
+            <li class="disabled"><a href="#/topic">Loading topics...</a></li>
+          </ul>
+        </li>
+-->
+<!--        <li id="nav_doc"><a href="#/doc">Document</a></li>
+        <li id="nav_word"><a href="#/word">Word</a></li>
+        <li id="nav_bib"><a href="#/bib">Bibliography</a></li>
+        <li id="nav_words"><a href="#/words">All words</a></li>
+        <li id="nav_about"><a href="#/about">About</a></li>
+      </ul>
+-->
+    </div><!--/.navbar-collapse -->
+  </div>
+</div>
+  
+<div id="main_container" class="container">
+
+  <div id="loading" class="well">
+    <p>Loading...</p>
+  </div>
+
+  <div id="error" class="hidden">
+  </div>
+
+  <div id="about_view" class="hidden">
+    <div id="meta_info"></div>
+    <div id="about_clouds">
+      <p>Select <b>Term clouds</b> above to view the term clouds again. The full topic model browser can be accessed via the <b>&#8592; Back to topic browser</b> menu item.</p>
+      <p>Selecting the title of a term cloud or an individual character in a cloud opens the topic browser page for that topic or character.</p>
+      <p>The topic cloud viewer is based on the <a href="http://www.jasondavies.com/word-cloud/" target="blank">word cloud layout tool</a> by Jason Davies and algorithm by <a href="http://static.mrfeinberg.com/bv_ch03.pdf" target="blank">Jonathan Feinberg.</a></p>
+    </div>
+  </div>
+
+  <div id="clouds">
+  </div>
+
+  <script>
+
+    function showClouds() {
+//      console.log("in showClouds");
+      d3.select("#about_view").classed("hidden", true); 
+      d3.select("#clouds").classed("hidden", false); 
+      return false;
+    }
+
+    function showAbout() {
+//      console.log("in show");
+      d3.select("#about_view").classed("hidden", false); 
+      d3.select("#clouds").classed("hidden", true); 
+      return false;
+    }
+
+    document.getElementById("about").onclick = function() { showAbout(); };
+    
+    document.getElementById("show_clouds").onclick = function() { showClouds(); };
+
+//console.log("drawing clouds");
+//d3.select("#loading").classed("hidden", false);
+//d3.select("#loading").classed("well", false);
+
+wordScale=d3.scale.linear().domain([100,300,900,2700]).range([9,18,36,72]).clamp(true);
+wordColor=d3.scale.linear().domain([9,18,36,72]).range(["blue","green","orange","red"]);
+//wordOpacity=d3.scale.linear().domain([.02,.005,.00125,.0003125]).range([.25,.50,.75,1]);
+wordOpacity=d3.scale.linear().domain([.0003125,.00125,.005,.02]).range([1,.8,.5,.25]).clamp(true);
+
+for (x = 0; x < 150; x++) {
+	viz = d3.select("#clouds").append("svg")
+    .attr("width", 250)
+    .attr("height", 270)
+    .attr("id", "svg" + x);
+}
+for (x = 0; x < 150; x++) {
+  
+  d3.csv("topic_words"+x+".csv", function(topic) {
+    
+    d3.layout.cloud().size([250, 250])
+      .words(topic)
+      .rotate(function() { return ~~(Math.random() * 2) * 5; })
+      .fontSize(function(d) { return wordScale(d.size); })
+      .on("end", draw)
+      .start();
+
+      function draw(words) {
+	  
+        viz = d3.select("#svg" + topic[0].topic);
+        
+        viz.append("g")
+          .attr("transform", "translate(125,145)")
+          .selectAll("text")
+          .data(words)
+          .enter().append("text")
+            .style("font-size", function(d) { return d.size + "px"; })
+            .style("fill", function(d) { return wordColor(d.size); })
+            .style("fill-opacity", function(d) { return wordOpacity(d.freq); })
+            .on("click", function(d) { window.open("../qts-topics/model.html#/word/" + d.text); })
+            .on("mouseover", function() { this.setAttribute("stroke", "black"); })
+            .on("mouseout", function() { this.setAttribute("stroke", "none"); })
+            .attr("text-anchor", "middle")
+            .attr("transform", function(d) {
+              return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+            })
+            .text(function(d) { return d.text; });
+             
+          
+        viz.append("text")
+//          .attr("transform", "translate(0,61)")
+          .data([topic[0]])
+          .style("font-size", 20)
+          .style("font-weight", 900)
+          .on("mouseover", function() { this.setAttribute("fill", "blue"); })
+          .on("mouseout", function() { this.setAttribute("fill", "black"); })
+          .attr("x", 75)
+          .attr("y", 20)
+          .on("click", function(d) { window.open("../qts-topics/model.html#/topic/" + (parseInt(d.topic)+1)); })
+          .text(function(d) { return "TOPIC " + (parseInt(d.topic)+1); })
+        
+      }
+
+  })
+
+}
+
+//d3.select("#loading").classed("well", true);
+//d3.select("#clouds").classed("hidden", false);
+
+//console.log("drew clouds");
+
+</script>
+
+  </div> <!-- clouds -->
+
+</div> <!-- main-container -->
+
+</body>
+
+</html>
+

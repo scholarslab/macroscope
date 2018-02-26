@@ -1,0 +1,16 @@
+.text-list {
+    width: 25%;
+    /*height: 100%;*/
+    height: 1000px;
+    float: left;
+
+    .book {
+        cursor: pointer;
+        list-style-type: none;
+        margin: 20px;
+    }
+
+    .inactive {
+        background: gray;
+    }
+}

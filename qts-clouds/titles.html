@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <title>QTS Topic Title Clouds</title> 
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <script src="http://d3js.org/d3.v2.min.js?2.10.0"></script>
+    <script type="text/javascript" src="d3.layout.cloud.js"></script>
+</head>
+
+<body>
+<script>
+
+
+wordScale=d3.scale.linear().domain([200,400,800,1600,3200]).range([15,22,29,36,43]).clamp(true);
+wordColor=d3.scale.linear().domain([15,22,29,36,43]).range(["blue","green","orange","red"]);
+//wordOpacity=d3.scale.linear().domain([.02,.005,.00125,.0003125]).range([.25,.50,.75,1]);
+wordOpacity=d3.scale.linear().domain([.00015625,.000625,.0025, .01]).range([1,.8,.5,.25]).clamp(true);
+
+for (x = 0; x < 150; x++) {
+	viz = d3.select("body").append("svg")
+    .attr("width", 250)
+    .attr("height", 270)
+    .attr("id", "svg" + x);
+}
+for (x = 0; x < 150; x++) {
+//d3.json("topic.json", function(topic) {
+//d3.csv("http://localhost/~pbroadwell_local/topic-cloud/topic_words"+x+".csv", function(topic) {
+d3.csv("topic_titles"+x+".csv", function(topic) {
+	
+  d3.layout.cloud().size([250, 250])
+//      .words([{"text":"test","size":wordScale(.01)},{"text":"bad","size":wordScale(1)}])
+      .words(topic)
+      .rotate(function() { return ~~(Math.random() * 2) * 5; })
+      .fontSize(function(d) { return wordScale(d.size); })
+      .on("end", draw)
+      .start();
+
+  function draw(words) {
+	  
+	viz = d3.select("#svg" + topic[0].topic);
+        
+      viz.append("g")
+        .attr("transform", "translate(125,145)")
+      .selectAll("text")
+        .data(words)
+      .enter().append("text")
+        .style("font-size", function(d) { return d.size + "px"; })
+        .style("fill", function(d) { return wordColor(d.size); })
+        .style("fill-opacity", function(d) { return wordOpacity(d.freq); })
+        .attr("text-anchor", "middle")
+        .attr("transform", function(d) {
+          return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+        })
+        .text(function(d) { return d.text; });
+    
+		viz
+        .append("text")
+        .data([topic[0]])
+        .style("font-size", 20)
+        .style("font-weight", 900)
+        .attr("x", 75)
+        .attr("y", 20)
+        .text(function(d) { return "TOPIC " + (parseInt(d.topic) + 1); })
+
+//  d3.select("#svg"+x).append("svg:text").text("Topic " + x);	
+//    viz.enter().append("svg:text").text("Topic " + x);
+
+  }
+
+})
+}
+</script>
